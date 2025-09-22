@@ -1,10 +1,10 @@
 # workspace-detector
 
-A command-line tool for analyzing Roblox .rbxm model files to identify workspaces and detect hidden places embedded within them.
+A command-line tool for analyzing Roblox .rbxm(x) model files to identify workspaces and detect hidden places embedded within them.
 
 ## Overview
 
-This tool examines Roblox model files and provides detailed analysis of their structure, specifically focusing on workspace detection and identifying potentially hidden game places that may be embedded within model files. It runs on the [Lune](https://github.com/lune-org/lune) runtime environment.
+This tool works to detect Roblox workspaces within .rbxm(x) model files, which could potentially contain stolen/lost places. It runs on the [Lune](https://github.com/lune-org/lune) runtime environment.
 
 ## Installation
 
