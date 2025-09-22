@@ -27,31 +27,28 @@ chmod +x detector.luau
 ### Basic Usage
 
 ```bash
-lune run detector path/to/your/model.rbxm
+lune run detector path/to/your/model.rbxm(x)
 ```
 
-### Output Formats
+### Options
 
-Human-readable output (default):
+#### Directory scan:
+
 ```bash
-lune run detector model.rbxm
+lune run detector.lua --directory /path/to/your/directory/with/models
 ```
 
-JSON output for external use:
+#### Output list of files containing workspaces:
+
 ```bash
-lune run detector.lua model.rbxm --format=json
+lune run detector.lua --output /path/to/your/output/file.txt
 ```
 
-### Batch Processing
 
-Process multiple files:
-```bash
-lune run detector.lua *.rbxm --batch
-```
 
 ## Limitations
 
-- Requires valid .rbxm files (corrupted/invalid files may cause errors)
+- Requires valid .rbxm files (corrupted/invalid/different versioned files may cause errors)
 
 ## Contributing
 
