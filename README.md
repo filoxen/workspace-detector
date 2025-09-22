@@ -32,7 +32,7 @@ lune run detector path/to/your/model.rbxm(x)
 
 ### Options
 
-#### Directory scan:
+#### Directory scan (recursive):
 
 ```bash
 lune run detector.lua --directory /path/to/your/directory/with/models
