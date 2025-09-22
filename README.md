@@ -10,7 +10,7 @@ This tool examines Roblox model files and provides detailed analysis of their st
 
 ### Prerequisites
 
-[Install the Lune runtime](https://lune-org.github.io/docs/getting-started/1-installation/)
+[Install the Lune runtime using rokit](https://lune-org.github.io/docs/getting-started/1-installation/)
 
 ### Setup
 
@@ -19,7 +19,7 @@ Clone or download this repository and ensure the main script is executable:
 ```bash
 git clone https://github.com/filoxen/workspace-detector.git
 cd workspace-detector
-chmod +x detector.luau
+rokit install
 ```
 
 ## Usage
