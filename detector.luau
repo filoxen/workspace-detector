@@ -2,6 +2,7 @@ local process = require("@lune/process")
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 local stdio = require("@lune/stdio")
+local download_models = require("./download_models")
 
 local args = process.args
 
@@ -79,6 +80,16 @@ while i <= #args do
         directoryMode = true
         directoryPath = args[i + 1]
         i = i + 2
+    elseif arg == "--asset" or arg == "--a" then
+        if i + 1 > #args and not process.env.OPEN_CLOUD_API_KEY then
+            stdio.write(stdio.color("red"))
+            stdio.write("Error: --asset (or --a) flag requires an asset ID and a valid Open Cloud API Key.\n")
+            stdio.write(stdio.color("reset"))
+            process.exit(1)
+        end
+        downloadAssetMode = true
+        downloadAssetId = args[i+1]
+        i = i+2
     else
         -- regular file argument
         if not directoryMode then
@@ -120,6 +131,17 @@ if directoryMode then
         stdio.write(`Warning: No .rbxm or .rbxmx files found in directory {directoryPath}.\n`)
         stdio.write(stdio.color("reset"))
         process.exit(0)
+    end
+end
+
+if downloadAssetMode then
+    local assetContents = download_models.downloadModel(downloadAssetId)
+    if assetContents then
+        table.insert(filesToProcess, assetContents)
+    else
+        stdio.write(stdio.color("yellow"))
+        stdio.write(`Warning: Asset fetch for asset with id: {downloadAssetId} failed. Is your Open Cloud key valid and does it have assetdelivery scope?\n`)
+        stdio.write(stdio.color("reset"))
     end
 end
 
@@ -176,9 +198,9 @@ if outputFile then
 end
 
 -- print summary
-    stdio.write("\nFiles containing a Workspace instance:\n")
-    for _, file in pairs(filesWithWorkspace) do
-        stdio.write(stdio.color("green"))
-        stdio.write(`  {file}\n`)
-        stdio.write(stdio.color("reset"))
-    end
+stdio.write("\nFiles containing a Workspace instance:\n")
+for _, file in pairs(filesWithWorkspace) do
+    stdio.write(stdio.color("green"))
+    stdio.write(`  {file}\n`)
+    stdio.write(stdio.color("reset"))
+end
