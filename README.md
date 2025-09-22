@@ -14,7 +14,7 @@ This tool examines Roblox model files and provides detailed analysis of their st
 
 ### Setup
 
-Clone or download this repository and ensure the main script is executable:
+Clone or download this repository and ensure all required libraries are installed:
 
 ```bash
 git clone https://github.com/filoxen/workspace-detector.git
