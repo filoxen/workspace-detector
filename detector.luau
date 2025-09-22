@@ -32,7 +32,10 @@ end
 
 -- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model
 function fileContainsWorkspace(fileContents: string): boolean
-    local instances = roblox.deserializeModel(fileContents)
+    local success, instances = pcall(function() return roblox.deserializeModel(fileContents) end) 
+	if not success then -- roblox doesn't like seeing <binary> files, so this is a work-around
+		return string.find(fileContents, "Item class=\"Workspace\"") and true or false 
+	end 
     return scanForWorkspace(instances)
 end 
 
