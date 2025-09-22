@@ -111,13 +111,19 @@ if directoryMode then
     end
     
     -- read directory and collect .rbxm and .rbxmx files
-    for _, file in pairs(fs.readDir(directoryPath)) do
-        local fullPath = directoryPath .. "/" .. file
-        if fs.isFile(fullPath) and isValidModelFile(file) then
-            table.insert(filesToProcess, fullPath)
-        end
-    end
+	local function readDirLoop(dirPath)
+		for _, file in pairs(fs.readDir(dirPath)) do
+			local fullPath = dirPath .. "/" .. file
+			if fs.isFile(fullPath) and isValidModelFile(file) then
+				table.insert(filesToProcess, fullPath)
+			elseif fs.isDir(fullPath) then 
+				readDirLoop(fullPath)
+			end 
+		end
+	end 
     
+	readDirLoop(directoryPath)
+	
     if #filesToProcess == 0 then
         stdio.write(stdio.color("yellow"))
         stdio.write(`Warning: No .rbxm or .rbxmx files found in directory {directoryPath}.\n`)
