@@ -25,7 +25,8 @@ if #args < 1 then
     stdio.write("       lune run detector --output output.txt file1.rbxm file2.rbxm\n")
     stdio.write("       lune run detector --directory path/to/folder --o output.txt\n")
     stdio.write("       lune run detector --force-binary-read file1 file2.bin file3.robloxmodelfile\n")
-    stdio.write("       lune run detector --directory path/to/folder --force-binary-read\n")
+    stdio.write("       lune run detector --print-instance-names file1.rbxm\n")
+    stdio.write("       lune run detector --zlib-decompress file1.rbxm\n")
     stdio.write(stdio.color("reset"))
     process.exit(1)
 end
