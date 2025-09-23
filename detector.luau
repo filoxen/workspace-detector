@@ -47,6 +47,14 @@ end
 
 -- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model. if it can't be deserialized, it will return the results of a naive search through the xml
 function fileContainsWorkspace(fileContents: string): boolean
+    if zlibDecompressFiles then 
+        local success = pcall(function() fileContents = serde.decompress("zlib", fileContents) end)
+        if not success then
+            stdio.write(stdio.color("yellow"))
+            stdio.write("Warning: Failed to decompress file with zlib. Proceeding with original contents.\n")
+            stdio.write(stdio.color("reset"))
+        end 
+    end
     local success, instances = pcall(function() return roblox.deserializeModel(fileContents) end) 
 	if not success then -- roblox doesn't like seeing <binary> files, so this is a work-around
 		return string.find(fileContents, "Item class=\"Workspace\"") and true or false
@@ -98,6 +106,9 @@ while i <= #args do
     elseif arg == "--print-instance-names" then
         printInstanceNames = true
         i = i+1
+    elseif arg == "--zlib-decompress" then
+        zlibDecompressFiles = true
+        i = i + 1
     else
         -- regular file argument
         if not directoryMode then
