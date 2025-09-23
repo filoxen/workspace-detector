@@ -2,8 +2,18 @@ local process = require("@lune/process")
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 local stdio = require("@lune/stdio")
+local serde = require("@lune/serde")
 
 local args = process.args
+
+local outputFile = nil
+local directoryMode = false
+local directoryPath = nil
+-- i mainly added this arg because the modelscrape files dont have extensions and i dont feel like changing all of them ~ivy
+local forceBinaryRead = false
+local printInstanceNames = false
+local zlibDecompressFiles = false
+local filesToProcess = {}
 
 if #args < 1 then
     stdio.write(stdio.color("red"))
@@ -25,6 +35,9 @@ end
 -- recursively searches entire model
 function scanForWorkspace(model: {Instance}): boolean
     for _, child in pairs(model) do
+        if printInstanceNames then
+            print(child:GetFullName())
+        end
         if child:IsA("Workspace") or scanForWorkspace(child:GetChildren()) then
             return true
         end
@@ -32,11 +45,11 @@ function scanForWorkspace(model: {Instance}): boolean
     return false
 end
 
--- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model
+-- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model. if it can't be deserialized, it will return the results of a naive search through the xml
 function fileContainsWorkspace(fileContents: string): boolean
     local success, instances = pcall(function() return roblox.deserializeModel(fileContents) end) 
 	if not success then -- roblox doesn't like seeing <binary> files, so this is a work-around
-		return string.find(fileContents, "Item class=\"Workspace\"") and true or false 
+		return string.find(fileContents, "Item class=\"Workspace\"") and true or false
 	end 
     return scanForWorkspace(instances)
 end 
@@ -55,13 +68,6 @@ function isValidModelFile(fileName: string): boolean
     return ext == "rbxm" or ext == "rbxmx"
 end
 
--- parse arguments for flags
-local outputFile = nil
-local directoryMode = false
-local directoryPath = nil
--- i mainly added this arg because the modelscrape files dont have extensions and i dont feel like changing all of them ~ivy
-local forceBinaryRead = false
-local filesToProcess = {}
 
 local i = 1
 while i <= #args do
@@ -89,6 +95,9 @@ while i <= #args do
     elseif arg == "--force-binary-read" then
         forceBinaryRead = true
         i = i + 1
+    elseif arg == "--print-instance-names" then
+        printInstanceNames = true
+        i = i+1
     else
         -- regular file argument
         if not directoryMode then
