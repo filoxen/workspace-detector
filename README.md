@@ -44,6 +44,12 @@ lune run detector.lua --directory /path/to/your/directory/with/models
 lune run detector.lua --output /path/to/your/output/file.txt
 ```
 
+#### Process non-extensioned files (i.e no filetype extension / differing extension from .rbxm)
+
+```bash
+lune run detector.lua --force-binary-read /path/to/your/model.variantfile
+```
+
 
 
 ## Limitations

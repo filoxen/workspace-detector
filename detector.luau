@@ -14,6 +14,8 @@ if #args < 1 then
     stdio.write("       lune run detector --o output.txt file1.rbxm file2.rbxm\n")
     stdio.write("       lune run detector --output output.txt file1.rbxm file2.rbxm\n")
     stdio.write("       lune run detector --directory path/to/folder --o output.txt\n")
+    stdio.write("       lune run detector --force-binary-read file1 file2.bin file3.robloxmodelfile\n")
+    stdio.write("       lune run detector --directory path/to/folder --force-binary-read\n")
     stdio.write(stdio.color("reset"))
     process.exit(1)
 end
@@ -57,6 +59,8 @@ end
 local outputFile = nil
 local directoryMode = false
 local directoryPath = nil
+-- i mainly added this arg because the modelscrape files dont have extensions and i dont feel like changing all of them ~ivy
+local forceBinaryRead = false
 local filesToProcess = {}
 
 local i = 1
@@ -82,6 +86,9 @@ while i <= #args do
         directoryMode = true
         directoryPath = args[i + 1]
         i = i + 2
+    elseif arg == "--force-binary-read" then
+        forceBinaryRead = true
+        i = i + 1
     else
         -- regular file argument
         if not directoryMode then
@@ -110,12 +117,14 @@ if directoryMode then
         process.exit(1)
     end
     
-    -- read directory and collect .rbxm and .rbxmx files
+    -- read directory and collect files
 	local function readDirLoop(dirPath)
 		for _, file in pairs(fs.readDir(dirPath)) do
 			local fullPath = dirPath .. "/" .. file
-			if fs.isFile(fullPath) and isValidModelFile(file) then
-				table.insert(filesToProcess, fullPath)
+			if fs.isFile(fullPath) then
+                if forceBinaryRead or isValidModelFile(file) then
+                    table.insert(filesToProcess, fullPath)
+                end
 			elseif fs.isDir(fullPath) then 
 				readDirLoop(fullPath)
 			end 
@@ -126,11 +135,12 @@ if directoryMode then
 	
     if #filesToProcess == 0 then
         stdio.write(stdio.color("yellow"))
-        stdio.write(`Warning: No .rbxm or .rbxmx files found in directory {directoryPath}.\n`)
+        stdio.write(`Warning: No files found in directory {directoryPath}.\n`)
         stdio.write(stdio.color("reset"))
         process.exit(0)
     end
 end
+
 if #filesToProcess == 0 then
     stdio.write(stdio.color("red"))
     stdio.write("Error: No files to process.\n")
@@ -142,13 +152,14 @@ local totalFiles = #filesToProcess
 local filesWithWorkspace = {}
 local processedFiles = 0
 
+
 stdio.write(`Processing {totalFiles} file(s)...\n\n`)
 
 for _, filePath in pairs(filesToProcess) do
     processedFiles = processedFiles + 1
     
     if fs.isFile(filePath) then
-        if directoryMode or isValidModelFile(filePath) then
+        if forceBinaryRead or directoryMode or isValidModelFile(filePath) then
             local success, result = pcall(function()
                 local fileContents = fs.readFile(filePath)
                 return fileContainsWorkspace(fileContents)
