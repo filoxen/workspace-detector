@@ -2,14 +2,16 @@
 local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 local process = require("@lune/process")
+local serde = require("@lune/serde")
 local core = require("./core")
+local types = require("./types")
 
 local fileproc = {}
 
-function fileproc.collectFiles(opts)
+function fileproc.collectFiles(opts: types.opts): {string}
     local filesToProcess = opts.filesToProcess or {}
     if opts.directoryMode then
-        if not fs.isDir(opts.directoryPath) then
+        if not opts.directoryPath or not fs.isDir(opts.directoryPath) then
             stdio.write(stdio.color("red"))
             stdio.write(`Error: Directory {opts.directoryPath} does not exist.\n`)
             stdio.write(stdio.color("reset"))
@@ -44,7 +46,7 @@ function fileproc.collectFiles(opts)
     return filesToProcess
 end
 
-function fileproc.processFiles(filesToProcess, opts)
+function fileproc.processFiles(filesToProcess: {string}, opts: types.opts): {string}
     local filesWithWorkspace = {}
     for _, filePath in pairs(filesToProcess) do
         if fs.isFile(filePath) then
@@ -75,6 +77,16 @@ function fileproc.processFiles(filesToProcess, opts)
         end
     end
     return filesWithWorkspace
+end
+
+-- take in file contents and zlib decompress them
+-- if recursive param is true repeatedly zlib decompress the file until it fails
+-- (modelscrape files are often double/triple zlib decompressed)
+function fileproc.zlibDecompress(contents: string, recursive: boolean?): string | boolean
+    local success: boolean, decompressedContents: string = pcall(function()
+        return serde.decompress("zlib", contents)
+    end)
+    return success and decompressedContents or success
 end
 
 return fileproc

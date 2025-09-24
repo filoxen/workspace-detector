@@ -2,11 +2,12 @@
 local roblox = require("@lune/roblox")
 local stdio = require("@lune/stdio")
 local serde = require("@lune/serde")
+local types = require("./types")
 
 local core = {}
 
 -- recursively searches a model for a workspace instance
-function core.scanForWorkspace(model, printInstanceNames)
+function core.scanForWorkspace(model: types.model, printInstanceNames: boolean): boolean
     for _, child in pairs(model) do
         if printInstanceNames then
             print(child:GetFullName())
@@ -19,13 +20,13 @@ function core.scanForWorkspace(model, printInstanceNames)
 end
 
 -- checks if file has valid extension
-function core.isValidModelFile(fileName)
+function core.isValidModelFile(fileName: string): boolean
     local ext = string.match(fileName, "%.([^%.]+)$")
     return ext == "rbxm" or ext == "rbxmx"
 end
 
 -- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model. if it can't be deserialized, it will return the results of a naive search through the xml
-function core.fileContainsWorkspace(fileContents, opts)
+function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boolean
     if opts.zlibDecompressFiles then
         local success = pcall(function() fileContents = serde.decompress("zlib", fileContents) end)
         if not success then
@@ -41,7 +42,7 @@ function core.fileContainsWorkspace(fileContents, opts)
     return core.scanForWorkspace(instances, opts.printInstanceNames)
 end
 
-function core.formatResult(result, fileName)
+function core.formatResult(result: boolean, fileName: string): string
     if result then
         return stdio.color("green") .. `File {fileName} contains a Workspace instance.` .. stdio.color("reset")
     else

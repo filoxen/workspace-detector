@@ -2,10 +2,11 @@
 local process = require("@lune/process")
 local stdio = require("@lune/stdio")
 local fs = require("@lune/fs")
+local types = require("./types")
 
 local cli = {}
 
-function cli.parseArgs()
+function cli.parseArgs(): types.opts
     local args = process.args
     local opts = {
         outputFile = nil,
@@ -76,7 +77,7 @@ function cli.printUsage()
     stdio.write(stdio.color("reset"))
 end
 
-function cli.checkOutputFile(outputFile)
+function cli.checkOutputFile(outputFile: string?)
     if outputFile and fs.isFile(outputFile) then
         stdio.write(stdio.color("red"))
         stdio.write(`Error: Output file {outputFile} already exists. Will not overwrite.\n`)
