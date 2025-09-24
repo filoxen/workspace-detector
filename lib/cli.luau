@@ -21,6 +21,7 @@ function cli.parseArgs(): types.opts
         forceBinaryRead = false,
         printInstanceNames = false,
         zlibDecompressFiles = false,
+        zlibDecompressFilesRecursive = false,
         filesToProcess = {}
     }
     if #args < 1 then
@@ -58,6 +59,8 @@ function cli.parseArgs(): types.opts
         elseif arg == "--zlib-decompress" then
             opts.zlibDecompressFiles = true
             i = i + 1
+        elseif arg == "--zlib-decompress-recursive" then
+            opts.zlibDecompressFilesRecursive = true
         else
             if not opts.directoryMode then
                 table.insert(opts.filesToProcess, arg)
@@ -80,6 +83,7 @@ function cli.printUsage()
     stdio.write("       lune run detector --force-binary-read file1 file2.bin file3.robloxmodelfile\n")
     stdio.write("       lune run detector --print-instance-names file1.rbxm\n")
     stdio.write("       lune run detector --zlib-decompress file1.rbxm\n")
+    stdio.write("       lune run detector --zlib-decompress-recursive file1.rbxm\n")
     stdio.write(stdio.color("reset"))
 end
 
@@ -91,5 +95,7 @@ function cli.checkOutputFile(outputFile: string?)
         process.exit(1)
     end
 end
+
+
 
 return cli

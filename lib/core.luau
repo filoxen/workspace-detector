@@ -1,8 +1,8 @@
 -- handles core detection logic for workspace in models
 local roblox = require("@lune/roblox")
 local stdio  = require("@lune/stdio")
-local serde  = require("@lune/serde")
 local types  = require("./types")
+local compression = require("./compression")
 
 export type Core = {
     scanForWorkspace:      (model: types.model, printInstanceNames: boolean) -> boolean,
@@ -40,7 +40,7 @@ function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boo
     assert(typeof(fileContents) == "string", "Expected fileContents to be of type 'string'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     if opts.zlibDecompressFiles then
-        local success = pcall(function() fileContents = serde.decompress("zlib", fileContents) end)
+        local success = pcall(function() fileContents = compression.zlibDecompress(fileContents, opts.zlibDecompressFilesRecursive) end)
         if not success then
             stdio.write(stdio.color("yellow"))
             stdio.write("Warning: Failed to decompress file with zlib. Proceeding with original contents.\n")
