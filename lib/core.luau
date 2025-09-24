@@ -5,7 +5,7 @@ local serde  = require("@lune/serde")
 local types  = require("./types")
 
 export type Core = {
-    scanForWorkspace:      (model: {Instance}, printInstanceNames: boolean) -> boolean,
+    scanForWorkspace:      (model: types.model, printInstanceNames: boolean) -> boolean,
     isValidModelFile:      (fileName: string) -> boolean,
     fileContainsWorkspace: (fileContents: string, opts: types.opts) -> boolean,
     formatResult:          (result: boolean, fileName: string) -> string

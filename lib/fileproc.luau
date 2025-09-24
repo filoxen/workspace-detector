@@ -2,7 +2,7 @@
 local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 local process = require("@lune/process")
-local serde = require("@lune/serde")
+local _serde = require("@lune/serde")
 local core = require("./core")
 local types = require("./types")
 

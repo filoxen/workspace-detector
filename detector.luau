@@ -1,3 +1,4 @@
+-- main entry point
 local cli = require("./lib/cli")
 local fileproc = require("./lib/fileproc")
 local fs = require("@lune/fs")
