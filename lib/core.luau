@@ -1,4 +1,4 @@
---[[ handles core detection logic for workspace in models ]]
+-- handles core detection logic for workspace in models
 local roblox = require("@lune/roblox")
 local stdio  = require("@lune/stdio")
 local serde  = require("@lune/serde")
