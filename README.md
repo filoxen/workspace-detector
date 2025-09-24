@@ -6,6 +6,18 @@ A command-line tool for analyzing Roblox .rbxm(x) model files to identify worksp
 
 This tool works to detect Roblox workspaces within .rbxm(x) model files, which could potentially contain stolen/lost places. It runs on the [Lune](https://github.com/lune-org/lune) runtime environment.
 
+## Project Structure
+
+- `detector.luau`: Main entrypoint
+- `lib/cli.luau`: CLI argument parsing and usage
+- `lib/core.luau`: Core detection logic (workspace scanning, file analysis)
+- `lib/fileproc.luau`: File and directory processing
+- `tests/`: Test models for validation
+    - `containsworkspace/`: Models that should be detected as containing workspaces
+    - `doesntcontainworkspace/`: Models that should NOT be detected as containing workspaces
+    - `zlibCompressed/`: Models compressed with zlib
+    - `binaryFiles/`: Binary or extensionless test files
+
 ## Installation
 
 ### Prerequisites
@@ -50,7 +62,17 @@ lune run detector.lua --output /path/to/your/output/file.txt
 lune run detector.lua --force-binary-read /path/to/your/model.variantfile
 ```
 
+#### Print all instance names while scanning:
 
+```bash
+lune run detector.lua --print-instance-names /path/to/your/model.rbxm
+```
+
+#### Decompress zlib-compressed files before scanning:
+
+```bash
+lune run detector.lua --zlib-decompress /path/to/your/model.rbxm
+```
 
 ## Limitations
 
