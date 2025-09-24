@@ -12,6 +12,7 @@ export type CLI = {
 
 local cli = {} :: CLI
 
+-- parses command line arguments into options
 function cli.parseArgs(): types.opts    
     local args = process.args
     local opts = {
@@ -68,6 +69,7 @@ function cli.parseArgs(): types.opts
     return opts
 end
 
+-- prints usage instructions for the command line tool
 function cli.printUsage()
     stdio.write(stdio.color("red"))
     stdio.write("Error: Please provide file path(s) or use --directory flag.\n")
@@ -83,6 +85,7 @@ function cli.printUsage()
     stdio.write(stdio.color("reset"))
 end
 
+-- checks if output file exists to prevent overwriting
 function cli.checkOutputFile(outputFile: string?)
     if outputFile and fs.isFile(outputFile) then
         stdio.write(stdio.color("red"))

@@ -14,6 +14,7 @@ export type FileProc = {
 
 local fileproc = {} :: FileProc
 
+-- collects files to process from command line args or directory
 function fileproc.collectFiles(opts: types.opts): {string}
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     local filesToProcess = opts.filesToProcess or {}
@@ -53,6 +54,7 @@ function fileproc.collectFiles(opts: types.opts): {string}
     return filesToProcess
 end
 
+-- processes each file and checks for workspace instances
 function fileproc.processFiles(filesToProcess: {string}, opts: types.opts): {string}
     assert(typeof(filesToProcess) == "table", "Expected filesToProcess to be of type 'table'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")

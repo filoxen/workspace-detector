@@ -54,6 +54,7 @@ function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boo
     return core.scanForWorkspace(instances, opts.printInstanceNames)
 end
 
+-- formats the workspace detection result as a colored string
 function core.formatResult(result: boolean, fileName: string): string
     assert(typeof(result) == "boolean", "Expected result to be of type 'boolean'")
     assert(typeof(fileName) == "string", "Expected fileName to be of type 'string'")
