@@ -11,15 +11,18 @@ This tool works to detect Roblox workspaces within .rbxm(x) model files, which c
 
 ## Project Structure
 
-- `detector.luau`: Main entrypoint
-- `lib/cli.luau`: CLI argument parsing and usage
-- `lib/core.luau`: Core detection logic (workspace scanning, file analysis)
-- `lib/fileproc.luau`: File and directory processing
-- `tests/`: Test models for validation
-    - `containsworkspace/`: Models that should be detected as containing workspaces
-    - `doesntcontainworkspace/`: Models that should NOT be detected as containing workspaces
-    - `zlibCompressed/`: Models compressed with zlib
-    - `binaryFiles/`: Binary or extensionless test files
+```
+lib/
+├─ fileproc.luau           : File and directory processing
+├─ cli.luau                : CLI argument parsing and usage
+├─ core.luau               : Core detection logic (workspace scanning, etc)
+tests/
+├─ containsworkspace/      : Test cases that should contain workspaces
+├─ doesntcontainworkspace/ : Test cases that shouldn't contain workspaces
+├─ zlibCompressed/         : Zlib compressed test casees
+├─ binaryFiles/            : Extensionless/binary test cases
+detector.luau              : Main entrypoint
+```
 
 ## Installation
 
