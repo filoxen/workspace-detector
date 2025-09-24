@@ -9,6 +9,7 @@ export type opts = {
     forceBinaryRead:     boolean,
     printInstanceNames:  boolean,
     zlibDecompressFiles: boolean,
+    zlibDecompressFilesRecursive: boolean,
     filesToProcess:      {string?}
 }
 
