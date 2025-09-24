@@ -1,6 +1,5 @@
 local cli = require("./lib/cli")
 local fileproc = require("./lib/fileproc")
-local core = require("./lib/core")
 local fs = require("@lune/fs")
 local stdio = require("@lune/stdio")
 
