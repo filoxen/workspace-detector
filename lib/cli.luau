@@ -4,9 +4,15 @@ local stdio = require("@lune/stdio")
 local fs = require("@lune/fs")
 local types = require("./types")
 
-local cli = {}
+export type CLI = {
+    parseArgs: () -> types.opts,
+    printUsage: () -> (),
+    checkOutputFile: (outputFile: string?) -> ()
+}
 
-function cli.parseArgs(): types.opts
+local cli = {} :: CLI
+
+function cli.parseArgs(): types.opts    
     local args = process.args
     local opts = {
         outputFile = nil,

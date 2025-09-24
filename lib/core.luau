@@ -1,13 +1,22 @@
--- handles core detection logic for workspace in models
+--[[ handles core detection logic for workspace in models ]]
 local roblox = require("@lune/roblox")
-local stdio = require("@lune/stdio")
-local serde = require("@lune/serde")
-local types = require("./types")
+local stdio  = require("@lune/stdio")
+local serde  = require("@lune/serde")
+local types  = require("./types")
 
-local core = {}
+export type Core = {
+    scanForWorkspace:      (model: {Instance}, printInstanceNames: boolean) -> boolean,
+    isValidModelFile:      (fileName: string) -> boolean,
+    fileContainsWorkspace: (fileContents: string, opts: types.opts) -> boolean,
+    formatResult:          (result: boolean, fileName: string) -> string
+}
+
+local core = {} :: Core
 
 -- recursively searches a model for a workspace instance
 function core.scanForWorkspace(model: types.model, printInstanceNames: boolean): boolean
+    assert(typeof(model) == "table", "Expected model to be of type 'table''")
+    assert(typeof(printInstanceNames) == "boolean", "Expected printInstanceNames to be of type 'boolean'")
     for _, child in pairs(model) do
         if printInstanceNames then
             print(child:GetFullName())
@@ -21,12 +30,15 @@ end
 
 -- checks if file has valid extension
 function core.isValidModelFile(fileName: string): boolean
+    assert(typeof(fileName) == "string", "Expected fileName to be of type 'string'")
     local ext = string.match(fileName, "%.([^%.]+)$")
     return ext == "rbxm" or ext == "rbxmx"
 end
 
 -- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model. if it can't be deserialized, it will return the results of a naive search through the xml
 function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boolean
+    assert(typeof(fileContents) == "string", "Expected fileContents to be of type 'string'")
+    assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     if opts.zlibDecompressFiles then
         local success = pcall(function() fileContents = serde.decompress("zlib", fileContents) end)
         if not success then
@@ -43,6 +55,8 @@ function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boo
 end
 
 function core.formatResult(result: boolean, fileName: string): string
+    assert(typeof(result) == "boolean", "Expected result to be of type 'boolean'")
+    assert(typeof(fileName) == "string", "Expected fileName to be of type 'string'")
     if result then
         return stdio.color("green") .. `File {fileName} contains a Workspace instance.` .. stdio.color("reset")
     else

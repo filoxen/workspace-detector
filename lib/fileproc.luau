@@ -6,9 +6,16 @@ local serde = require("@lune/serde")
 local core = require("./core")
 local types = require("./types")
 
-local fileproc = {}
+export type FileProc = {
+    collectFiles: (opts: types.opts) -> {string},
+    processFiles: (filesToProcess: {string}, opts: types.opts) -> {string},
+    zlibDecompress: (contents: string, recursive: boolean?) -> string | boolean
+}
+
+local fileproc = {} :: FileProc
 
 function fileproc.collectFiles(opts: types.opts): {string}
+    assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     local filesToProcess = opts.filesToProcess or {}
     if opts.directoryMode then
         if not opts.directoryPath or not fs.isDir(opts.directoryPath) then
@@ -47,6 +54,8 @@ function fileproc.collectFiles(opts: types.opts): {string}
 end
 
 function fileproc.processFiles(filesToProcess: {string}, opts: types.opts): {string}
+    assert(typeof(filesToProcess) == "table", "Expected filesToProcess to be of type 'table'")
+    assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     local filesWithWorkspace = {}
     for _, filePath in pairs(filesToProcess) do
         if fs.isFile(filePath) then
@@ -83,10 +92,7 @@ end
 -- if recursive param is true repeatedly zlib decompress the file until it fails
 -- (modelscrape files are often double/triple zlib decompressed)
 function fileproc.zlibDecompress(contents: string, recursive: boolean?): string | boolean
-    local success: boolean, decompressedContents: string = pcall(function()
-        return serde.decompress("zlib", contents)
-    end)
-    return success and decompressedContents or success
+    error("fileproc.zlibDecompress is not implemented.")
 end
 
 return fileproc
