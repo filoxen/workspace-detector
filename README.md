@@ -21,6 +21,7 @@ tests/
 ├─ doesntcontainworkspace/ : Test cases that shouldn't contain workspaces
 ├─ zlibCompressed/         : Zlib compressed test casees
 ├─ binaryFiles/            : Extensionless/binary test cases
+├─ tests.luau              : Test runner for CI
 detector.luau              : Main entrypoint
 ```
 
