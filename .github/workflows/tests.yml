@@ -21,9 +21,11 @@ jobs:
       - name: add rokit to PATH
         run: echo "$HOME/.rokit/bin" >> $GITHUB_PATH
 
-      # Install lune
+      # add and install lune
       - name: Install Lune 
-        run: rokit install
+        run: |
+          rokit add lune-org/lune
+          rokit install
       # Run ./tests/tests.luau with lune and fail if it exits with process code 1
       - name: Run tests
         run: lune run tests/tests
