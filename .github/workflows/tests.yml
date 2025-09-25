@@ -24,6 +24,9 @@ jobs:
       - name: Install Lune 
         run: rokit install --no-trust-check
 
+
       - name: Run tests
-        run: lune run tests/tests
+        run: |
+          cd tests
+          lune run tests
         continue-on-error: false
