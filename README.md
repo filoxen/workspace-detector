@@ -53,31 +53,36 @@ lune run detector path/to/your/model.rbxm(x)
 #### Directory scan (recursive):
 
 ```bash
-lune run detector.lua --directory /path/to/your/directory/with/models
+lune run detector --directory /path/to/your/directory/with/models
 ```
 
 #### Output list of files containing workspaces:
 
 ```bash
-lune run detector.lua --output /path/to/your/output/file.txt
+lune run detector --output /path/to/your/output/file.txt
 ```
 
 #### Process non-extensioned files (i.e no filetype extension / differing extension from .rbxm)
 
 ```bash
-lune run detector.lua --force-binary-read /path/to/your/model.variantfile
+lune run detector --force-binary-read /path/to/your/model.variantfile
 ```
 
 #### Print all instance names while scanning:
 
 ```bash
-lune run detector.lua --print-instance-names /path/to/your/model.rbxm
+lune run detector --print-instance-names /path/to/your/model.rbxm
 ```
 
 #### Decompress zlib-compressed files before scanning:
 
 ```bash
-lune run detector.lua --zlib-decompress /path/to/your/model.rbxm
+lune run detector --zlib-decompress /path/to/your/model.rbxm
+```
+
+##### Recursively decompress zlib
+```bash
+lune run detector --zlib-decompress-recursive /path/to/your/model.rbxm
 ```
 
 ## Limitations
@@ -86,7 +91,7 @@ lune run detector.lua --zlib-decompress /path/to/your/model.rbxm
 
 ## Contributing
 
-Contributions are welcome. Please ensure new features include documentation.
+Contributions are welcome. Please ensure new features include documentation. Follow existing code style to the best of your ability and try not to make breaking changes.
 
 ## License
 
