@@ -39,7 +39,7 @@ end
 function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boolean
     assert(typeof(fileContents) == "string", "Expected fileContents to be of type 'string'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
-    if opts.zlibDecompressFiles then
+    if opts.zlibDecompressFiles or opts.zlibDecompressFilesRecursive then
         local success = pcall(function() fileContents = compression.zlibDecompress(fileContents, opts.zlibDecompressFilesRecursive) end)
         if not success then
             stdio.write(stdio.color("yellow"))

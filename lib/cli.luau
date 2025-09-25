@@ -62,6 +62,7 @@ function cli.parseArgs(): types.opts
             i = i + 1
         elseif arg == "--zlib-decompress-recursive" then
             opts.zlibDecompressFilesRecursive = true
+            i = i + 1
         else
             if not opts.directoryMode then
                 table.insert(opts.filesToProcess, arg)
