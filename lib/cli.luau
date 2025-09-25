@@ -5,8 +5,8 @@ local fs = require("@lune/fs")
 local types = require("./types")
 
 export type CLI = {
-    parseArgs: () -> types.opts,
-    printUsage: () -> (),
+    parseArgs:       () -> types.opts,
+    printUsage:      () -> (),
     checkOutputFile: (outputFile: string?) -> ()
 }
 
@@ -14,8 +14,8 @@ local cli = {} :: CLI
 
 -- parses command line arguments into options
 function cli.parseArgs(): types.opts    
-    local args = process.args
-    local opts = {
+    local args: {string} = process.args
+    local opts: types.opts = {
         outputFile = nil,
         directoryMode = false,
         directoryPath = nil,

@@ -14,7 +14,7 @@ function compressionModule.zlibDecompress(contents: string, recursive: boolean?)
     assert(typeof(contents) == "string", "Expected contents to be of type 'string'")
     if recursive == nil then recursive = false end
     assert(typeof(recursive) == "boolean", "Expected recursive to be of type 'boolean'")
-    local success, decompressed = pcall(function() return serde.decompress("zlib", contents) end)
+    local success, decompressed: string = pcall(function() return serde.decompress("zlib", contents) end)
     if not success then
         return false
     end
