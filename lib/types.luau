@@ -15,4 +15,6 @@ export type opts = {
 
 export type model = {Instance}
 
+export type callbackFunction = (file: string, opts: opts) -> string | boolean
+
 return types
