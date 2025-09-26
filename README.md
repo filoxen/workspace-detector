@@ -119,7 +119,7 @@ When you add a new option (via a command line flag), add it to `./lib/types.luau
 When you add a new function to any library, add it to the function's type. If you add a new library, define a type for it and type cast the module to it:
 ```luau
 export type YourModule = {
-    yourFunction:      (...) -> unknown,
+    yourFunction: (...) -> unknown,
 }
 -- note the camel case vs pascal case
 local yourModule = {} :: YourModule
