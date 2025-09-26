@@ -94,6 +94,37 @@ lune run detector --zlib-decompress-recursive /path/to/your/model.rbxm
 
 Contributions are welcome. Please ensure new features include documentation. Follow existing code style to the best of your ability and try not to make breaking changes.
 
+When adding new core functions that operate on files, please follow the existing convention:
+
+```luau
+(fileContents: string, opts: types.opts) -> string | boolean
+```
+
+This is for writing working tests. To write a new test, follow the example in `tests.luau`:
+
+```luau
+-- folderName should be the name of a folder of .rbxm(x) files in ./tests
+local yourTest = testFolder(yourFunction: (fileContents: string, opts: types.opts) -> string | boolean, yourFunctionsOpt: types.opts, folderName: string)
+
+for fileName, result in pairs(yourTest) do
+    if result then
+        print(`Test failed: {fileName} yourReason`)
+        process.exit(1)
+    end
+end
+print("All tests passed for files in yourFolderName.")
+```
+
+When you add a new option (via a command line flag), add it to `./lib/types.luau`, following the existing conventions.
+When you add a new function to any library, add it to the function's type. If you add a new library, define a type for it and type cast the module to it:
+```luau
+export type YourModule = {
+    yourFunction:      (...) -> unknown,
+}
+-- note the camel case vs pascal case
+local yourModule = {} :: YourModule
+```
+
 ## License
 
 Copyright (C) 2025 Filoxen Labs
