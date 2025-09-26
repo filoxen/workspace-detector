@@ -3,14 +3,14 @@
 local types = {}
 
 export type opts = {
-    outputFile:          string?,
-    directoryMode:       boolean,
-    directoryPath:       string?,
-    forceBinaryRead:     boolean,
-    printInstanceNames:  boolean,
-    zlibDecompressFiles: boolean,
+    outputFile:                   string?,
+    directoryMode:                boolean,
+    directoryPath:                string?,
+    forceBinaryRead:              boolean,
+    printInstanceNames:           boolean,
+    zlibDecompressFiles:          boolean,
     zlibDecompressFilesRecursive: boolean,
-    filesToProcess:      {string?}
+    filesToProcess:               {string?}
 }
 
 export type model = {Instance}

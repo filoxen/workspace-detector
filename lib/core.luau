@@ -40,7 +40,7 @@ function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boo
     assert(typeof(fileContents) == "string", "Expected fileContents to be of type 'string'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     if opts.zlibDecompressFiles or opts.zlibDecompressFilesRecursive then
-        local success = pcall(function() fileContents = compression.zlibDecompress(fileContents, opts.zlibDecompressFilesRecursive) end)
+        local success = pcall(function() fileContents = compression.zlibDecompress(fileContents, opts) end)
         if not success then
             stdio.write(stdio.color("yellow"))
             stdio.write("Warning: Failed to decompress file with zlib. Proceeding with original contents.\n")
@@ -53,6 +53,7 @@ function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boo
     end
     return core.scanForWorkspace(instances, opts.printInstanceNames)
 end
+
 
 -- formats the workspace detection result as a colored string
 function core.formatResult(result: boolean, fileName: string): string

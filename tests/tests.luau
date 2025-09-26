@@ -2,67 +2,47 @@ local fs = require("@lune/fs")
 local process = require("@lune/process")
 local core = require("../lib/core")
 local compression = require("../lib/compression")
+local types = require("../lib/types")
 
 
-local containsWorkspaceDir = fs.readDir("./containsworkspace")
-local containsWorkspaceTestsPassed = 0
-
-for _, filePath in containsWorkspaceDir do
-    local fileContents = fs.readFile("./containsworkspace/" .. filePath)
-    local result = core.fileContainsWorkspace(fileContents, {
-        forceBinaryRead = false,
-        directoryMode = false,
-        printInstanceNames = false,
-        zlibDecompressFiles = false,
-        zlibDecompressFilesRecursive = false
-    })
-    if result then
-        containsWorkspaceTestsPassed += 1
-    else
-        print("Test failed for file: " .. filePath)
+function testFolder(callback: (file: string, opts: types.opts) -> boolean, opts: types.opts, folderPath: string): {boolean}
+    local results = {}
+    local folder = fs.readDir(folderPath)
+    for _, file in pairs(folder) do
+        local filePath = `./{folderPath}/{file}`
+        local fileContents = fs.readFile(filePath)
+        local result = callback(fileContents, opts)
+        results[file] = result
     end
+    return results
 end
 
-local doesntContainWorkspaceDir = fs.readDir("./doesntcontainworkspace")
-local doesntContainWorkspaceTestsPassed = 0
+local containsWorkspaceTest = testFolder(core.fileContainsWorkspace, {outputFile = nil, directoryMode = false, directoryPath = nil, forceBinaryRead = false, printInstanceNames = false, zlibDecompressFiles = false, zlibDecompressFilesRecursive = false, filesToProcess = nil} , "containsworkspace")
 
-for _, filePath in doesntContainWorkspaceDir do
-    local fileContents = fs.readFile("./doesntcontainworkspace/" .. filePath)
-    local result = core.fileContainsWorkspace(fileContents, {
-        forceBinaryRead = false,
-        directoryMode = false,
-        printInstanceNames = false,
-        zlibDecompressFiles = false,
-        zlibDecompressFilesRecursive = false
-    })
+for fileName, result in pairs(containsWorkspaceTest) do
     if not result then
-        doesntContainWorkspaceTestsPassed += 1
-    else
-        print("Test failed for file: " .. filePath)
+        print(`Test failed: {fileName} should contain a workspace instance.`)
+        process.exit(1)
     end
 end
+print("All tests passed for files in containsworkspace.")
 
-local zlibCompressedDir = fs.readDir("./zlibCompressed")
-local zlibCompressedTestsPassed = 0
-
-for _, filePath in zlibCompressedDir do
-    local fileContents = fs.readFile("./zlibCompressed/" .. filePath)
-    local result = compression.zlibDecompress(fileContents, true)
+local doesntContainWorkspaceTest = testFolder(core.fileContainsWorkspace, {outputFile = nil, directoryMode = false, directoryPath = nil, forceBinaryRead = false, printInstanceNames = false, zlibDecompressFiles = false, zlibDecompressFilesRecursive = false, filesToProcess = nil}, "doesntcontainworkspace")
+for fileName, result in pairs(doesntContainWorkspaceTest) do
     if result then
-        zlibCompressedTestsPassed += 1
-    else
-        print("Test failed for file: " .. filePath)
+        print(`Test failed: {fileName} shouldn't contain a workspace instance.`)
+        process.exit(1)
     end
 end
+print("All tests passed for files in doesntcontainworkspace.")
 
-print(`Passed {containsWorkspaceTestsPassed}/{#containsWorkspaceDir} "contains workspace" tests.`)
-print(`Passed {doesntContainWorkspaceTestsPassed}/{#doesntContainWorkspaceDir} "doesn't contain workspace" tests.`)
-print(`Passed {zlibCompressedTestsPassed}/{#zlibCompressedDir} "zlib compressed" tests.`)
+local zlibDecompressedTest = testFolder(compression.zlibDecompress, {outputFile = nil, directoryMode = false, directoryPath = nil, forceBinaryRead = false, printInstanceNames = false, zlibDecompressFiles = false, zlibDecompressFilesRecursive = true, filesToProcess = nil}, "zlibCompressed")
 
-if containsWorkspaceTestsPassed == #containsWorkspaceDir and doesntContainWorkspaceTestsPassed == #doesntContainWorkspaceDir and zlibCompressedTestsPassed == #zlibCompressedDir then
-    print("All tests passed!")
-    process.exit(0)
-else
-    print("Some tests failed.")
-    process.exit(1)
+for fileName, result in pairs(zlibDecompressedTest) do
+    if not result then
+        print(`Test failed: {fileName} should be zlib decompressed successfully.`)
+        process.exit(1)
+    end
 end
+print("All tests passed for zlib decompression.")
+print("All tests passed.")
