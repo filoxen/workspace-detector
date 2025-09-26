@@ -5,7 +5,7 @@ local compression = require("../lib/compression")
 local types = require("../lib/types")
 
 
-function testFolder(callback: (file: string, opts: types.opts) -> boolean, opts: types.opts, folderPath: string): {boolean}
+function testFolder(callback: (file: string, opts: types.opts) -> string | boolean, opts: types.opts, folderPath: string): {boolean}
     local results = {}
     local folder = fs.readDir(folderPath)
     for _, file in pairs(folder) do
