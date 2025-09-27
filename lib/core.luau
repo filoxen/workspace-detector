@@ -13,7 +13,27 @@ export type Core = {
 
 local core = {} :: Core
 
--- recursively searches a model for a workspace instance
+--[[
+    Recursively scans a model (table of Instances) for a Workspace instance.
+
+    ### Example usage
+
+    ```lua
+    local roblox = require("@lune/roblox")
+    local core = require("./core")
+
+    local model = roblox.deserializeModel(fileContents)
+    if core.scanForWorkspace(model) then
+        print("This model contains a Workspace instance.")
+    else
+        print("This model does not contain a Workspace instance.")
+    end
+    ```
+
+    @param model The deserialized Roblox model to scan.
+    @param printInstanceNames If true, prints the full names of all instances in the model during the scan.
+    @return True if a Workspace instance is found, false otherwise.
+]]--
 function core.scanForWorkspace(model: types.model, printInstanceNames: boolean): boolean
     assert(typeof(model) == "table", "Expected model to be of type 'table''")
     assert(typeof(printInstanceNames) == "boolean", "Expected printInstanceNames to be of type 'boolean'")
@@ -28,14 +48,62 @@ function core.scanForWorkspace(model: types.model, printInstanceNames: boolean):
     return false
 end
 
--- checks if file has valid extension
+--[[
+	Returns true if the file has a .rbxm or .rbxmx extension, false otherwise.
+
+	### Example usage
+
+	```lua
+	local fs = require("@lune/fs")
+
+	local modelFile = fs.readFile("filePath.rbxm")
+    if core.isValidModelFile("filePath.rbxm") then
+        print("This is a valid Roblox model file.")
+    else
+        print("This is not a valid Roblox model file.")
+    end
+	```
+
+	@param contents The filename of the model file to check.
+    @return True if the file has a valid model extension, false otherwise.
+]]--
 function core.isValidModelFile(fileName: string): boolean
     assert(typeof(fileName) == "string", "Expected fileName to be of type 'string'")
     local ext = string.match(fileName, "%.([^%.]+)$")
     return ext == "rbxm" or ext == "rbxmx"
 end
 
--- takes in fileContents as a string and deserializes them returning the results of scanForWorkspace() on the deserialized model. if it can't be deserialized, it will return the results of a naive search through the xml
+
+--[[
+    Checks if the given file contents contain a Workspace instance.
+
+    If the file is a valid Roblox model file, attempts to deserialize it and scan for a Workspace instance.
+    If deserialization fails, falls back to a simple string search for the Workspace tag.
+
+    If zlib decompression options are enabled in opts, attempts to decompress the file contents before scanning.
+
+    ### Example usage
+
+    ```lua
+    local fs = require("@lune/fs")
+    local core = require("./core")
+
+    local fileContents = fs.readFile("model.rbxm")
+    local opts = {
+        printInstanceNames = true,
+        zlibDecompressFiles = true,
+        zlibDecompressFilesRecursive = false
+    }
+    if core.fileContainsWorkspace(fileContents, opts) then
+        print("The file contains a Workspace instance.")
+    else
+        print("The file does not contain a Workspace instance.")
+    end
+    ```
+    @param fileContents The contents of the file to check.
+    @param opts Options table of type `types.opts`
+    @return True if a Workspace instance is found, false otherwise.
+]]
 function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boolean
     assert(typeof(fileContents) == "string", "Expected fileContents to be of type 'string'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
@@ -55,7 +123,13 @@ function core.fileContainsWorkspace(fileContents: string, opts: types.opts): boo
 end
 
 
--- formats the workspace detection result as a colored string
+--[[
+    Formats the workspace detection result as a colored string.
+
+    @param result The boolean result of the workspace detection.
+    @param fileName The name of the file that was checked.
+    @return A formatted string indicating whether the file contains a Workspace instance, colored green for true and yellow for false.
+]]--
 function core.formatResult(result: boolean, fileName: string): string
     assert(typeof(result) == "boolean", "Expected result to be of type 'boolean'")
     assert(typeof(fileName) == "string", "Expected fileName to be of type 'string'")

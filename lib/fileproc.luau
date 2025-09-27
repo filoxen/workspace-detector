@@ -12,7 +12,23 @@ export type FileProc = {
 
 local fileproc = {} :: FileProc
 
--- collects files to process from command line args or directory
+--[[
+    Collects files to process based on command line arguments or directory mode.
+
+    ### Example usage
+
+    ```lua
+    local cli = require("./cli")
+    local fileproc = require("./fileproc")
+
+    local opts = cli.parseArgs()
+    local filesToProcess = fileproc.collectFiles(opts)
+    print("Files to process:", table.concat(filesToProcess, ", "))
+    ```
+
+    @param opts Options table of type `types.opts`.
+    @return A list of file paths to process.
+]]--
 function fileproc.collectFiles(opts: types.opts): {string}
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     local filesToProcess = opts.filesToProcess or {}
@@ -52,7 +68,25 @@ function fileproc.collectFiles(opts: types.opts): {string}
     return filesToProcess
 end
 
--- processes each file and checks for workspace instances
+--[[
+    Processes each file and checks for workspace instances.
+
+    ### Example usage
+
+    ```lua
+    local cli = require("./cli")
+    local fileproc = require("./fileproc")
+
+    local opts = cli.parseArgs()
+    local filesToProcess = fileproc.collectFiles(opts)
+    local filesWithWorkspace = fileproc.processFiles(filesToProcess, opts)
+    print("Files containing Workspace instances:", table.concat(filesWithWorkspace, ", "))
+    ```
+
+    @param filesToProcess A list of file paths to process.
+    @param opts Options table of type `types.opts`.
+    @return A list of file paths that contain Workspace instances.
+]]--
 function fileproc.processFiles(filesToProcess: {string}, opts: types.opts): {string}
     assert(typeof(filesToProcess) == "table", "Expected filesToProcess to be of type 'table'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")

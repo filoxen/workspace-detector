@@ -12,7 +12,19 @@ export type CLI = {
 
 local cli = {} :: CLI
 
--- parses command line arguments into options
+--[[
+    Parses command line arguments into an options table.
+
+    ### Example usage
+
+    ```lua
+    local cli = require("./cli")
+
+    local opts = cli.parseArgs()
+    ```
+
+    @return An options table containing parsed command line arguments of type `types.opts`.
+]]--
 function cli.parseArgs(): types.opts    
     local args: {string} = process.args
     local opts: types.opts = {
@@ -73,7 +85,19 @@ function cli.parseArgs(): types.opts
     return opts
 end
 
--- prints usage instructions for the command line tool
+--[[
+    Prints usage instructions for the command line tool.
+
+    ### Example usage
+
+    ```lua
+    local cli = require("./cli")
+
+    cli.printUsage()
+    ```
+
+    @return none
+]]--
 function cli.printUsage()
     stdio.write(stdio.color("red"))
     stdio.write("Error: Please provide file path(s) or use --directory flag.\n")
@@ -90,7 +114,21 @@ function cli.printUsage()
     stdio.write(stdio.color("reset"))
 end
 
--- checks if output file exists to prevent overwriting
+--[[
+    Checks if the specified output file already exists to prevent overwriting.
+    If the file exists, prints an error message and exits the program.
+
+    ### Example usage
+
+    ```lua
+    local cli = require("./cli")
+
+    cli.checkOutputFile("output.txt")
+    ```
+
+    @param outputFile The path to the output file to check.
+    @return none
+]]--
 function cli.checkOutputFile(outputFile: string?)
     if outputFile and fs.isFile(outputFile) then
         stdio.write(stdio.color("red"))
