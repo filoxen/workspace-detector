@@ -31,7 +31,21 @@ local fileproc = {} :: FileProc
 ]]--
 function fileproc.collectFiles(opts: types.opts): {string}
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
-    local filesToProcess = opts.filesToProcess or {}
+    local filesWithWorkspace = {} 
+
+    local function processDir(dirPath)
+        for _, file in pairs(fs.readDir(dirPath)) do
+            local fullPath = dirPath .. "/" .. file
+            if fs.isDir(fullPath) then
+                processDir(fullPath)
+            elseif fs.isFile(fullPath) then
+                if opts.forceBinaryRead or core.isValidModelFile(file) then
+                    table.insert(filesWithWorkspace, fullPath)
+                end
+            end
+        end
+    end
+
     if opts.directoryMode then
         if not opts.directoryPath or not fs.isDir(opts.directoryPath) then
             stdio.write(stdio.color("red"))
@@ -39,34 +53,27 @@ function fileproc.collectFiles(opts: types.opts): {string}
             stdio.write(stdio.color("reset"))
             process.exit(1)
         end
-        local function readDirLoop(dirPath)
-            for _, file in pairs(fs.readDir(dirPath)) do
-                local fullPath = dirPath .. "/" .. file
-                if fs.isFile(fullPath) then
-                    if opts.forceBinaryRead or core.isValidModelFile(file) then
-                        table.insert(filesToProcess, fullPath)
-                    end
-                elseif fs.isDir(fullPath) then
-                    readDirLoop(fullPath)
-                end
-            end
-        end
-        readDirLoop(opts.directoryPath)
-        if #filesToProcess == 0 then
+
+        processDir(opts.directoryPath)
+
+        if #filesWithWorkspace == 0 then
             stdio.write(stdio.color("yellow"))
             stdio.write(`Warning: No files found in directory {opts.directoryPath}.\n`)
             stdio.write(stdio.color("reset"))
             process.exit(0)
         end
     end
-    if #filesToProcess == 0 then
+
+    if #filesWithWorkspace == 0 then
         stdio.write(stdio.color("red"))
         stdio.write("Error: No files to process.\n")
         stdio.write(stdio.color("reset"))
         process.exit(1)
     end
-    return filesToProcess
+
+    return filesWithWorkspace
 end
+
 
 --[[
     Processes each file and checks for workspace instances.
