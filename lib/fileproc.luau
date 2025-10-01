@@ -8,6 +8,7 @@ local types = require("./types")
 export type FileProc = {
     collectFiles: (opts: types.opts) -> {string},
     processFiles: (filesToProcess: {string}, opts: types.opts) -> {string},
+    cleanFile: (fileContents: string) -> string,
 }
 
 local fileproc = {} :: FileProc
@@ -120,6 +121,12 @@ function fileproc.processFiles(filesToProcess: {string}, opts: types.opts): {str
         end
     end
     return filesWithWorkspace
+end
+
+
+function fileproc.cleanFile(fileContents: string): string
+    local textureless =fileContents:gsub('<Content name="Texture">.-</Content>', '')
+    return textureless:gsub("<External>.-</External>", "")
 end
 
 

@@ -5,6 +5,7 @@ local compression = require("../lib/compression")
 local types = require("../lib/types")
 local model2game = require("../lib/model2game")
 local roblox = require("@lune/roblox")
+local fileproc = require("../lib/fileproc")
 
 
 function testFolder(callback: types.callbackFunction, opts: types.opts, folderPath: string): {boolean}
@@ -51,10 +52,11 @@ print("All tests passed.")
 
 print("Testing model2game...")
 print("reading model...")
-local file = fs.readFile("./containsworkspace/workspace.rbxmx")
+local file = fs.readFile("./containsworkspace/workspace2.rbxmx")
 print("deserializing model...")
-local model = roblox.deserializeModel(file)
+local cleaned = fileproc.cleanFile(file)
+print("removed texture tags...")
+local model = roblox.deserializeModel(cleaned)
 print("converting model to game...")
 local contents = model2game.convert(model)
 fs.writeFile("./createdgame.rbxlx", contents)
-
