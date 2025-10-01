@@ -30,8 +30,8 @@ local compressionModule = {} :: CompressionModule
     @param opts Options table of type `types.opts`
     @return The decompressed data as a string, or false if decompression fails.
 ]]--
-function compressionModule.zlibDecompress(contents: string,  opts: types.opts): string | boolean
-    assert(typeof(contents) == "string", "Expected contents to be of type 'string'")
+function compressionModule.zlibDecompress(contents: string | buffer,  opts: types.opts): string | boolean
+    assert(typeof(contents) == "string" or typeof(contents) == "buffer", "Expected contents to be of type 'string' or 'buffer'")
     assert(typeof(opts) == "table", "Expected opts to be of type 'table'")
     local success, decompressed: string = pcall(function() return serde.decompress("zlib", contents) end)
     if not success then

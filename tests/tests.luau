@@ -11,7 +11,7 @@ function testFolder(callback: types.callbackFunction, opts: types.opts, folderPa
     for _, file in pairs(folder) do
         local filePath = `./{folderPath}/{file}`
         local fileContents = fs.readFile(filePath)
-        local result = callback(fileContents, opts)
+        local result = callback(fileContents, opts) :: boolean
         results[file] = result
     end
     return results
