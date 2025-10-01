@@ -2,7 +2,7 @@ local serde = require("@lune/serde")
 local types = require("./types")
 
 type CompressionModule = {
-    zlibDecompress: (contents: string, recursive: boolean?) -> string | boolean
+    zlibDecompress: (contents: string | buffer, recursive: boolean?) -> string | boolean
 }
 
 local compressionModule = {} :: CompressionModule
@@ -26,7 +26,7 @@ local compressionModule = {} :: CompressionModule
     end
     ```
 
-    @param contents The zlib-compressed data as a string.
+    @param contents The zlib-compressed data as a string or buffer.
     @param opts Options table of type `types.opts`
     @return The decompressed data as a string, or false if decompression fails.
 ]]--

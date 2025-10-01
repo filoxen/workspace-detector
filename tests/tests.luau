@@ -3,6 +3,8 @@ local process = require("@lune/process")
 local core = require("../lib/core")
 local compression = require("../lib/compression")
 local types = require("../lib/types")
+local model2game = require("../lib/model2game")
+local roblox = require("@lune/roblox")
 
 
 function testFolder(callback: types.callbackFunction, opts: types.opts, folderPath: string): {boolean}
@@ -46,3 +48,13 @@ for fileName, result in pairs(zlibDecompressedTest) do
 end
 print("All tests passed for zlib decompression.")
 print("All tests passed.")
+
+print("Testing model2game...")
+print("reading model...")
+local file = fs.readFile("./containsworkspace/workspace.rbxmx")
+print("deserializing model...")
+local model = roblox.deserializeModel(file)
+print("converting model to game...")
+local contents = model2game.convert(model)
+fs.writeFile("./createdgame.rbxlx", contents)
+
