@@ -1,7 +1,7 @@
 -- handles core detection logic for workspace in models
 local roblox = require("@lune/roblox")
-local stdio  = require("@lune/stdio")
-local types  = require("./types")
+local stdio = require("@lune/stdio")
+local types = require("./types")
 local compression = require("./compression")
 
 export type Core = {
@@ -35,7 +35,7 @@ local core = {} :: Core
     @return True if a Workspace instance is found, false otherwise.
 ]]--
 function core.scanForWorkspace(model: types.model, printInstanceNames: boolean): boolean
-    assert(typeof(model) == "table", "Expected model to be of type 'table''")
+    assert(typeof(model) == "table", "Expected model to be of type 'table'")
     assert(typeof(printInstanceNames) == "boolean", "Expected printInstanceNames to be of type 'boolean'")
     for _, child in pairs(model) do
         if printInstanceNames then
@@ -93,6 +93,7 @@ end
         printInstanceNames = true,
         zlibDecompressFiles = true,
         zlibDecompressFilesRecursive = false
+        -- other options...
     }
     if core.fileContainsWorkspace(fileContents, opts) then
         print("The file contains a Workspace instance.")
